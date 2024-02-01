@@ -1,0 +1,40 @@
+{
+  "hash": "3ef41521",
+  "configHash": "1d57945f",
+  "lockfileHash": "1a9238d8",
+  "browserHash": "03f644d8",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/.pnpm/react@18.2.0/node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "4709923e",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/.pnpm/react@18.2.0/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f8e6aaef",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "b9f0aaa4",
+      "needsInterop": true
+    },
+    "@radix-ui/react-separator": {
+      "src": "../../node_modules/.pnpm/@radix-ui+react-separator@1.0.3_@types+react-dom@18.2.18_@types+react@18.2.48_react-dom@18.2.0_react@18.2.0/node_modules/@radix-ui/react-separator/dist/index.mjs",
+      "file": "@radix-ui_react-separator.js",
+      "fileHash": "3746a25c",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-LVULWPWR": {
+      "file": "chunk-LVULWPWR.js"
+    },
+    "chunk-H5YRQ6MP": {
+      "file": "chunk-H5YRQ6MP.js"
+    }
+  }
+}
