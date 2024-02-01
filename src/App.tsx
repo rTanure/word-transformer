@@ -1,6 +1,6 @@
 import "./global.css"
 
-import React, { ChangeEvent, ReactNode, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 
 import WordIcon from "./icon/Word.jsx"
@@ -12,22 +12,6 @@ import { Button } from "./components/ui/button.js"
 import { toJson } from "./components/functions/xlsxProcessor.js"
 import { downloadFile, jsonToPdf } from "./components/functions/docxProcessor.js"
 import { Separator } from "./components/ui/separator.js"
-
-interface InputButtonProps {
-  children: ReactNode
-}
-
-const InputButton: React.FC<InputButtonProps> = ({ children }) => {
-  
-
-  return (
-    <div className="
-      
-      
-    ">{children}</div>
-  )
-}
-
 
 
 function App(): JSX.Element {
@@ -83,7 +67,7 @@ function App(): JSX.Element {
   return (
     <div className="w-screen h-screen  flex justify-end">
       <div className="bg-slate-800 h-screen w-96 flex gap-10  p-10 flex-col">
-        <label htmlFor="templateInput" className="block w-full bg-slate-400 h-40 rounded-lg p-4 saturate-50 cursor-pointer ease-linear duration-100 gap-6 flex hover:bg-slate-300" > 
+        <label htmlFor="templateInput" className=" w-full bg-slate-400 h-40 rounded-lg p-4 saturate-50 cursor-pointer ease-linear duration-100 gap-6 flex hover:bg-slate-300" > 
           <input id="templateInput" className="hidden" type="file" onChange={handleWordFileChange} accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
           <div className="h-full w-20 flex flex-col justify-center items-center ">
             <WordIcon/> 
@@ -109,7 +93,7 @@ function App(): JSX.Element {
 
 
         
-        <label htmlFor="dataInput" className="block w-full bg-slate-400 h-40 rounded-lg p-4 saturate-50 cursor-pointer ease-linear duration-100 gap-6 flex hover:bg-slate-300" > 
+        <label htmlFor="dataInput" className=" w-full bg-slate-400 h-40 rounded-lg p-4 saturate-50 cursor-pointer ease-linear duration-100 gap-6 flex hover:bg-slate-300" > 
           <input id="dataInput" className="hidden" type="file" onChange={handleExcelFileChange} accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
           <div className="h-full w-20 flex flex-col justify-center items-center ">
             <ExcelIcon /> 
