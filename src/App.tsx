@@ -129,8 +129,7 @@ function App(): JSX.Element {
         {
           transformedData ? (
             <div className="h-full w-full max flex flex-col">
-              <p className="px-4 py-2 text-lg text-slate-400 font-medium">Base de dados carregada:</p>
-              <DataTable data={transformedData}/>
+              <DataTable data={transformedData} name={excelFile?.name} />
             </div>
           ) : (
             <h1 className="text-2xl opacity-30 font-bold cursor-default select-none">Selecione uma base de dados</h1>
