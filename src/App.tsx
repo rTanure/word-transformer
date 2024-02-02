@@ -122,7 +122,7 @@ function App(): JSX.Element {
         <Separator className="bg-slate-700"/>
 
         <Button onClick={handleDownloadClick} className="" variant="secondary" disabled={finalBuffer ? false : true}>
-          {transformedData ? "Baixar dados" : "Aguardando Dados..."}
+          {finalBuffer ? "Baixar dados" : "Aguardando Dados..."}
         </Button>
       </div>
       <div className="bg-slate-950 h-full flex-1 text-slate-100 flex items-center justify-center p-10">
