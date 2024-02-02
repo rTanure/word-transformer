@@ -9,9 +9,11 @@ import UploadIcon from "./icon/Upload.js"
 
 import { Button } from "./components/ui/button.js"
 
-import { toJson } from "./components/functions/xlsxProcessor.js"
-import { downloadFile, jsonToPdf } from "./components/functions/docxProcessor.js"
+import { toJson } from "./functions/xlsxProcessor.js"
+import { downloadFile, jsonToPdf } from "./functions/docxProcessor.js"
 import { Separator } from "./components/ui/separator.js"
+
+import DataTable from "./components/elements/DataTable/index.js"
 
 
 function App(): JSX.Element {
@@ -123,10 +125,13 @@ function App(): JSX.Element {
           {transformedData ? "Baixar dados" : "Aguardando Dados..."}
         </Button>
       </div>
-      <div className="bg-slate-950 h-full flex-1 text-slate-100 flex items-center justify-center">
+      <div className="bg-slate-950 h-full flex-1 text-slate-100 flex items-center justify-center p-10">
         {
           transformedData ? (
-            <h1 className="text-2xl opacity-30 font-bold cursor-default select-none">Base de dados selecionada</h1>
+            <div className="h-full w-full max flex flex-col">
+              <p className="px-4 py-2 text-lg text-slate-400 font-medium">Base de dados carregada:</p>
+              <DataTable data={transformedData}/>
+            </div>
           ) : (
             <h1 className="text-2xl opacity-30 font-bold cursor-default select-none">Selecione uma base de dados</h1>
           )
