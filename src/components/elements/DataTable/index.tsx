@@ -4,7 +4,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell, TableCap
 
 interface dataTableProps {
   data: Array<singleDataProps>
-  name: string
+  name: string | undefined
 }
 
 interface singleDataProps {
