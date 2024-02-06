@@ -125,7 +125,7 @@ function App(): JSX.Element {
           {finalBuffer ? "Baixar dados" : "Aguardando Dados..."}
         </Button>
       </div>
-      <div className="bg-slate-950 h-full flex-1 text-slate-100 flex items-center justify-center p-10">
+      <div className="bg-slate-950 h-full flex-1 text-slate-100 flex items-center justify-center p-10" style={{width: "calc(100vw - 24rem)"}}>
         {
           transformedData ? (
             <div className="h-full w-full max flex flex-col">
