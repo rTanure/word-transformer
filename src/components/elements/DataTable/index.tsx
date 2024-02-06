@@ -15,15 +15,15 @@ export default function DataTable({ data, name}: dataTableProps) {
   const dataKeys = Object.keys(data[0])
   
   return (
-    <div className="w-full h-full bg-slate-900 rounded-md p-4 ">  
-      <p className="mb-2 text-lg text-slate-400 font-medium">Base de dados: {name}</p>
-    <Separator className="opacity-10" />
-      <ScrollArea className=" max-w-full h-80 flex-1 h-full">
+    <div className="w-full h-full bg-slate-900 rounded-md p-4 flex flex-col gap-2">  
+      <p className=" text-lg text-slate-400 font-medium">Base de dados: {name}</p>
+      <Separator className="opacity-10" />
+      <ScrollArea className="w-full h-full">
       
-          <Table className="w-full h-full">
+          <Table className="w-full">
             <TableCaption>Fim da sua base de dados</TableCaption>
-            <TableHeader >
-              <TableRow>
+            <TableHeader className="">
+              <TableRow className="">
                 {dataKeys.map((value, index)=>(
                   <TableHead key={index}>{value}</TableHead>
                 ))}
@@ -44,7 +44,7 @@ export default function DataTable({ data, name}: dataTableProps) {
               
             </TableBody>
           </Table>
-        <ScrollBar orientation="horizontal"/>
+        <ScrollBar orientation="horizontal" className="bg-slate-900 "/>
       </ScrollArea>
     </div>
   )
