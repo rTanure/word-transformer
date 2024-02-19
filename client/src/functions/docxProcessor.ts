@@ -1,8 +1,6 @@
 import Docxtemplater from "docxtemplater"
 import PizZip from "pizzip"
 
-// import { PDFDocument } from 'pdf-lib';
-
 interface singleData {
   name: string
 }
