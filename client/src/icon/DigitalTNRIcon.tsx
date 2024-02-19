@@ -1,0 +1,9 @@
+
+export default function DigitalTNRIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 124 117" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M41.0281 117L0 43.97V117L41.0281 117ZM0 0.000316923L0.000171681 1.13308e-05L0 1.13308e-05V0.000316923ZM0.000184412 1.13308e-05L61.7866 109.98L90.7079 58.4998L61.7868 7.02018L32.8655 58.5L20.5143 36.5148L41.0283 6.07994e-06L0.000184412 1.13308e-05ZM123.573 117H82.5451L123.573 43.9704V117ZM82.5453 1.13308e-05L123.573 0L103.059 36.5147L82.5453 1.13308e-05Z" fill="#ffffff"/>
+    </svg>
+  )
+}
+
