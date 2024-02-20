@@ -1,10 +1,7 @@
 import DataTable from "@/components/elements/DataTable";
 import { jsonToPdf, downloadFile } from "@/functions/docxProcessor";
 import { toJson } from "@/functions/xlsxProcessor";
-import ExcelIcon from "@/icon/Excel";
 import UploadIcon from "@/icon/Upload";
-import WordIcon from "@/icon/Word";
-import { Separator } from "@radix-ui/react-separator";
 import { useState, ChangeEvent, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
