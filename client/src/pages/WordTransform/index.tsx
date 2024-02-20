@@ -1,12 +1,65 @@
 import DataTable from "@/components/elements/DataTable";
-import { Button } from "@/components/ui/button";
 import { jsonToPdf, downloadFile } from "@/functions/docxProcessor";
 import { toJson } from "@/functions/xlsxProcessor";
 import ExcelIcon from "@/icon/Excel";
+import UploadIcon from "@/icon/Upload";
 import WordIcon from "@/icon/Word";
-import { UploadIcon } from "@radix-ui/react-icons";
 import { Separator } from "@radix-ui/react-separator";
 import { useState, ChangeEvent, useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
+
+import styled from "styled-components";
+
+const DataViewComponent = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  color: white;
+
+  overflow: auto;
+
+  border-radius: 6px;
+
+  border: 1px solid rgba(255, 255, 255, 0.6);
+`
+
+const DataConfigComponent = styled.div`
+  width: 350px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+`
+
+const DataInput = styled.label`
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  display: block;
+  cursor: pointer;
+  width: 100%;
+  aspect-ratio: 16/9;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+
+  background-color: rgba(255, 255, 255, 0.04);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  p {
+    font-weight: bolder;
+    opacity: 0.6;
+  }
+
+`
 
 export default function WordTransform() {
   const [wordFile, setWordFile] = useState<File | null>(null)
@@ -59,65 +112,8 @@ export default function WordTransform() {
   }
 
   return (
-    <div className="w-full h-screen  flex justify-end flex-row-reverse">
-      <div className="bg-slate-800 h-screen w-96 flex gap-10  p-10 flex-col">
-        <label htmlFor="templateInput" className=" w-full bg-slate-400 h-40 rounded-lg p-4 saturate-50 cursor-pointer ease-linear duration-100 gap-6 flex hover:bg-slate-300" > 
-          <input id="templateInput" className="hidden" type="file" onChange={handleWordFileChange} accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
-          <div className="h-full w-20 flex flex-col justify-center items-center ">
-            <WordIcon/> 
-            <p className="text-2xl font-medium ">Word</p>
-          </div>
-          <div className="flex justify-center flex-col flex-1 text-left">
-            {wordFile ? (
-              <div>
-                <p className="opacity-70 text-sm text-center">Selecionado:</p>
-                <p className="font-medium text-lg text-center">{wordFile?.name}</p>
-              </div>
-              
-            ): (
-              <div className="flex flex-col items-center">
-                <div className="size-10 flex items-center justify-center">
-                  <UploadIcon />
-                </div>
-                <p className="font-medium text-lg text-center">Template</p>
-              </div>
-            )}
-          </div>
-        </label> 
-
-
-        
-        <label htmlFor="dataInput" className=" w-full bg-slate-400 h-40 rounded-lg p-4 saturate-50 cursor-pointer ease-linear duration-100 gap-6 flex hover:bg-slate-300" > 
-          <input id="dataInput" className="hidden" type="file" onChange={handleExcelFileChange} accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-          <div className="h-full w-20 flex flex-col justify-center items-center ">
-            <ExcelIcon /> 
-            <p className="text-2xl font-medium ">Excel</p>
-          </div>
-          <div className="flex justify-center flex-col flex-1 text-left">
-            {excelFile ? (
-              <div>
-                <p className="opacity-70 text-sm text-center">Selecionado:</p>
-                <p className="font-medium text-lg text-center">{excelFile?.name}</p>
-              </div>
-              
-            ): (
-              <div className="flex flex-col items-center">
-                <div className="size-10 flex items-center justify-center">
-                  <UploadIcon />
-                </div>
-                <p className="font-regular text-lg text-center">Base de Dados</p>
-              </div>
-            )}
-          </div>
-        </label> 
-
-        <Separator className="bg-slate-700"/>
-
-        <Button onClick={handleDownloadClick} className="" variant="secondary" disabled={finalBuffer ? false : true}>
-          {finalBuffer ? "Baixar dados" : "Aguardando Dados..."}
-        </Button>
-      </div>
-      <div className="bg-slate-950 h-full flex-1 text-slate-100 flex items-center justify-center p-10" style={{width: "calc(100vw - 24rem)"}}>
+    <div className="w-full h-screen p-6 flex gap-[24px]">
+      <DataViewComponent>
         {
           transformedData ? (
             <div className="h-full w-full max flex flex-col">
@@ -127,7 +123,48 @@ export default function WordTransform() {
             <h1 className="text-2xl opacity-30 font-bold cursor-default select-none">Selecione uma base de dados</h1>
           )
         }
-      </div> 
+      </DataViewComponent>  
+      <DataConfigComponent>
+        <div className="flex flex-col gap-[24px]">
+          <div>
+            <input id="dataInput" className="hidden" type="file" onChange={handleExcelFileChange} accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+            <DataInput htmlFor="dataInput">
+              {excelFile ? (
+                <div className="flex flex-col items-center">
+                  <UploadIcon/>
+                  <p className="font-medium text-lg text-center">{excelFile?.name}</p>
+                </div>
+                
+              ): (
+                <div className="flex flex-col items-center">
+                  <UploadIcon/>
+                  <p>Upload dos Dados</p>
+                </div>
+              )}
+              
+            </DataInput>
+          </div>
+          <div>
+          <input id="templateInput" className="hidden" type="file" onChange={handleWordFileChange} accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+            <DataInput htmlFor="templateInput">
+              {wordFile ? (
+                <div className="flex flex-col items-center">
+                  <UploadIcon/>
+                  <p className="font-medium text-lg text-center">{wordFile?.name}</p>
+                </div>
+                
+              ): (
+                <div className="flex flex-col items-center">
+                  <UploadIcon/>
+                  <p>Upload do Template</p>
+                </div>
+              )}
+            </DataInput>
+          </div>
+        </div>
+        
+        <Button variant="secondary"  onClick={handleDownloadClick} disabled={finalBuffer ? false : true}>{finalBuffer ? "Baixar dados" : "Aguardando Dados..."}</Button>
+      </DataConfigComponent>
     </div>
   )
 }
