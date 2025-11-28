@@ -1,5 +1,7 @@
 import Docxtemplater from "docxtemplater"
 import PizZip from "pizzip"
+import InspectModule from "docxtemplater/js/inspect-module";
+
 
 interface singleData {
   name: string
@@ -16,6 +18,67 @@ function downloadFile(blob: any, filename: string) {
   window.URL.revokeObjectURL(url);
 }
 
+export async function getVariables(template?: File | null): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    
+    if(!template) resolve([])
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const templateBuffer = reader.result as ArrayBuffer;
+
+        const zip = new PizZip(templateBuffer);
+        const inspectModule = new InspectModule();
+
+        const doc = new Docxtemplater(zip, {
+          modules: [inspectModule]
+        });
+
+        // Retorna todas as tags encontradas (como chaves do objeto)
+        const variables = Object.keys(inspectModule.getAllTags());
+
+        resolve(variables);
+      } catch (e) {
+        reject(e);
+      }
+    };
+
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(template);
+  });
+}
+
+export const jsonToDocx = (data: singleData, template: File): Promise<Blob | null> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const templateBuffer = reader.result as ArrayBuffer;
+        const zip = new PizZip(templateBuffer);
+
+        const doc = new Docxtemplater();
+        doc.loadZip(zip);
+        doc.setData(data); // usa os valores recebidos
+
+        doc.render();
+
+        // Gera o .docx diretamente (não mais ZIP)
+        const wordFile = doc.getZip().generate({ type: "blob" });
+
+        resolve(wordFile);
+      } catch (error) {
+        console.error("Erro ao gerar DOCX", error);
+        reject(error);
+      }
+    };
+
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(template);
+  });
+};
+
 const jsonToPdf = (data: Array<singleData>, template: File): Promise<Blob | null> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -23,13 +86,13 @@ const jsonToPdf = (data: Array<singleData>, template: File): Promise<Blob | null
     reader.onload = () => {
       const templateBuffer = reader.result as ArrayBuffer;
       
-      let zipedContent = new PizZip();
-      let docxFolder = zipedContent.folder("docx")
+      const zipedContent = new PizZip();
+      const docxFolder = zipedContent.folder("docx")
 
       const renderPromises = data.map((value, index) => {
         return new Promise((resolveRender, rejectRender) => {
-          let doc = new Docxtemplater();
-          let zip = new PizZip(templateBuffer);
+          const doc = new Docxtemplater();
+          const zip = new PizZip(templateBuffer);
 
           doc.loadZip(zip); // Carrega o template
           doc.setData(value); // Insere os valores

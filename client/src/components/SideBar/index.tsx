@@ -91,12 +91,12 @@ export default function SideBar() {
         <Divider />
         <ServicesMenu>
           <ServiceButton atual={true}> <DocumentIcon/> </ServiceButton>
-          <ServiceButton> <SoundIcon/> </ServiceButton>
+          {/* <ServiceButton> <SoundIcon/> </ServiceButton> */}
         </ServicesMenu>
       </div>
       <ConfigurationContainer>
 
-        <CircularButton>
+        {/* <CircularButton>
           <HelpIcon />
         </CircularButton>
 
@@ -106,7 +106,7 @@ export default function SideBar() {
 
         <CircularButton>
           <AccountIcon />
-        </CircularButton>
+        </CircularButton> */}
         
         
       </ConfigurationContainer>

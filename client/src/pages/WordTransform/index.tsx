@@ -1,5 +1,5 @@
 import DataTable from "@/components/elements/DataTable";
-import { jsonToPdf, downloadFile } from "@/functions/docxProcessor";
+import { jsonToPdf, downloadFile, getVariables, jsonToDocx } from "@/functions/docxProcessor";
 import { toJson } from "@/functions/xlsxProcessor";
 import UploadIcon from "@/icon/Upload";
 import { useState, ChangeEvent, useEffect } from "react";
@@ -7,6 +7,7 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 import styled from "styled-components";
+import RenderInputForm from "@/components/RenderInputForm";
 
 const DataViewComponent = styled.div`
   height: 100%;
@@ -64,6 +65,7 @@ export default function WordTransform() {
 
   const [transformedData, setTransformedData] = useState<null | Array<any>>(null)
   const [finalBuffer, setFinalBuffer] =  useState<null | Blob>(null)
+  const [variables, setVariables] = useState<string[]>([])
 
   const handleWordFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -92,17 +94,35 @@ export default function WordTransform() {
     fetchData();
   }, [excelFile]);
 
+  const handleFormSubmit = async (values: any) => {
+    if(!wordFile) return
+    try {
+      // converte os valores do form em uma lista de 1 documento
+      // const dataList = [values];
+
+      // chama sua função
+      const zipBlob = await jsonToDocx(values, wordFile);
+
+      if (!zipBlob) {
+        alert("Erro ao criar o arquivo.");
+        return;
+      }
+
+      // baixa como ZIP
+      downloadFile(zipBlob, "documento.pdf");
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao gerar documento.");
+    }
+  };
+
   useEffect(() => {
-    if (!transformedData || !wordFile) return;
-  
-    jsonToPdf(transformedData, wordFile)
-      .then((pdfBlob) => {
-        setFinalBuffer(pdfBlob);
-      })
-      .catch((error) => {
-        console.error("Erro ao converter para PDF:", error);
-      });
-  }, [wordFile, transformedData]);
+    const func = async () => {
+      const vars = await getVariables(wordFile)
+      setVariables(vars)
+    }
+    func()
+  }, [wordFile]);
 
   const handleDownloadClick = () => {
     downloadFile(finalBuffer, "files.zip")
@@ -112,37 +132,19 @@ export default function WordTransform() {
     <div className="w-full h-screen p-6 flex gap-[24px]">
       <DataViewComponent>
         {
-          transformedData ? (
+          wordFile ? (
             <div className="h-full w-full max flex flex-col">
-              <DataTable data={transformedData} name={excelFile?.name} />
+              <RenderInputForm variables={variables} onSubmitValues={handleFormSubmit}/>
             </div>
           ) : (
-            <h1 className="text-2xl opacity-30 font-bold cursor-default select-none">Selecione uma base de dados</h1>
+            <h1 className="text-2xl opacity-30 font-bold cursor-default select-none">Selecione um template</h1>
           )
         }
       </DataViewComponent>  
       <DataConfigComponent>
         <div className="flex flex-col gap-[24px]">
           <div>
-            <input id="dataInput" className="hidden" type="file" onChange={handleExcelFileChange} accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
-            <DataInput htmlFor="dataInput">
-              {excelFile ? (
-                <div className="flex flex-col items-center">
-                  <UploadIcon/>
-                  <p className="font-medium text-lg text-center">{excelFile?.name}</p>
-                </div>
-                
-              ): (
-                <div className="flex flex-col items-center">
-                  <UploadIcon/>
-                  <p>Upload dos Dados</p>
-                </div>
-              )}
-              
-            </DataInput>
-          </div>
-          <div>
-          <input id="templateInput" className="hidden" type="file" onChange={handleWordFileChange} accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+            <input id="templateInput" className="hidden" type="file" onChange={handleWordFileChange} accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
             <DataInput htmlFor="templateInput">
               {wordFile ? (
                 <div className="flex flex-col items-center">
@@ -160,7 +162,7 @@ export default function WordTransform() {
           </div>
         </div>
         
-        <Button variant="secondary"  onClick={handleDownloadClick} disabled={finalBuffer ? false : true}>{finalBuffer ? "Baixar dados" : "Aguardando Dados..."}</Button>
+        {/* <Button variant="secondary"  onClick={handleDownloadClick} disabled={finalBuffer ? false : true}>{finalBuffer ? "Baixar dados" : "Aguardando Dados..."}</Button> */}
       </DataConfigComponent>
     </div>
   )
