@@ -1,13 +1,11 @@
-import DataTable from "@/components/elements/DataTable";
-import { jsonToPdf, downloadFile, getVariables, jsonToDocx } from "@/functions/docxProcessor";
+import { downloadFile, getVariables, jsonToDocx } from "@/functions/docxProcessor";
 import { toJson } from "@/functions/xlsxProcessor";
 import UploadIcon from "@/icon/Upload";
-import { useState, ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 
-import styled from "styled-components";
 import RenderInputForm from "@/components/RenderInputForm";
+import styled from "styled-components";
 
 const DataViewComponent = styled.div`
   height: 100%;

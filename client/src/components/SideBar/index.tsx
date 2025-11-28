@@ -1,9 +1,5 @@
-import AccountIcon from "@/icon/AccountIcon"
 import DigitalTNRIcon from "@/icon/DigitalTNRIcon"
 import DocumentIcon from "@/icon/DocumentIcon"
-import HelpIcon from "@/icon/HelpIcon"
-import SettingsIcon from "@/icon/SettingsIcon"
-import SoundIcon from "@/icon/SoundIcon"
 import styled from "styled-components"
 
 const SidebarContainer = styled.div`
