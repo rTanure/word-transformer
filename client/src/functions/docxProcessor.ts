@@ -26,14 +26,14 @@ export async function getVariables(template?: File | null): Promise<string[]> {
 
     reader.onload = () => {
       try {
-        // const templateBuffer = reader.result as ArrayBuffer;
+        const templateBuffer = reader.result as ArrayBuffer;
 
-        // const zip = new PizZip(templateBuffer);
+        const zip = new PizZip(templateBuffer);
         const inspectModule = new InspectModule();
 
-        // const doc = new Docxtemplater(zip, {
-        //   modules: [inspectModule]
-        // });
+        new Docxtemplater(zip, {
+          modules: [inspectModule]
+        });
 
         // Retorna todas as tags encontradas (como chaves do objeto)
         const variables = Object.keys(inspectModule.getAllTags());
@@ -45,7 +45,7 @@ export async function getVariables(template?: File | null): Promise<string[]> {
     };
 
     reader.onerror = reject;
-    reader.readAsArrayBuffer(template as Blob);
+    reader.readAsArrayBuffer(template);
   });
 }
 

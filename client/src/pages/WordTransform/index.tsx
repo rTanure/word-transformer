@@ -84,6 +84,7 @@ export default function WordTransform() {
     const func = async () => {
       const vars = await getVariables(wordFile)
       setVariables(vars)
+      console.log(vars)
     }
     func()
   }, [wordFile]);
