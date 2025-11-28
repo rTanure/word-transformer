@@ -20,7 +20,7 @@ export default function RenderInputForm({ variables, onSubmitValues }: RenderInp
   return (
     <form
       onSubmit={handleSubmit(onSubmitValues)}
-      className="space-y-4 p-4 bg-neutral-900 text-neutral-200 rounded-md"
+      className="space-y-4 p-4  text-neutral-200 rounded-md"
     >
       {variables.map((v) => (
         <div key={v} className="flex flex-col">
