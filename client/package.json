@@ -28,6 +28,9 @@
     "tailwindcss-animate": "^1.0.7",
     "xlsx": "^0.18.5"
   },
+  "engines": {
+    "node": "24.x"
+  },
   "devDependencies": {
     "@types/node": "^20.11.13",
     "@types/react": "^18.2.43",
