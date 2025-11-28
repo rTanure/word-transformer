@@ -45,7 +45,7 @@ export async function getVariables(template?: File | null): Promise<string[]> {
     };
 
     reader.onerror = reject;
-    reader.readAsArrayBuffer(template);
+    reader.readAsArrayBuffer(template as Blob);
   });
 }
 
