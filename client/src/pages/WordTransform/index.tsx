@@ -1,5 +1,4 @@
 import { downloadFile, getVariables, jsonToDocx } from "@/functions/docxProcessor";
-import { toJson } from "@/functions/xlsxProcessor";
 import UploadIcon from "@/icon/Upload";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -59,10 +58,6 @@ const DataInput = styled.label`
 
 export default function WordTransform() {
   const [wordFile, setWordFile] = useState<File | null>(null)
-  const [excelFile, setExcelFile] = useState<File | null>(null)
-
-  const [transformedData, setTransformedData] = useState<null | Array<any>>(null)
-  const [finalBuffer, setFinalBuffer] =  useState<null | Blob>(null)
   const [variables, setVariables] = useState<string[]>([])
 
   const handleWordFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -70,43 +65,14 @@ export default function WordTransform() {
       setWordFile(event.target.files[0]);
     }
   };
-
-  const handleExcelFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setExcelFile(event.target.files[0]);
-    }
-  };
-
-  useEffect(() => {
-    if (!excelFile) return;
-    const fetchData = async () => {
-      try {
-        const data = await toJson(excelFile);
-        setTransformedData(data);
-        console.log(transformedData)
-      } catch (error) {
-        console.error("Erro ao transformar os dados do arquivo:", error);
-      }
-    };
-  
-    fetchData();
-  }, [excelFile]);
-
   const handleFormSubmit = async (values: any) => {
     if(!wordFile) return
-    try {
-      // converte os valores do form em uma lista de 1 documento
-      // const dataList = [values];
-
-      // chama sua função
-      const zipBlob = await jsonToDocx(values, wordFile);
+    try {      const zipBlob = await jsonToDocx(values, wordFile);
 
       if (!zipBlob) {
         alert("Erro ao criar o arquivo.");
         return;
       }
-
-      // baixa como ZIP
       downloadFile(zipBlob, "documento.pdf");
     } catch (e) {
       console.error(e);
@@ -121,10 +87,6 @@ export default function WordTransform() {
     }
     func()
   }, [wordFile]);
-
-  const handleDownloadClick = () => {
-    downloadFile(finalBuffer, "files.zip")
-  }
 
   return (
     <div className="w-full h-screen p-6 flex gap-[24px]">
@@ -159,8 +121,6 @@ export default function WordTransform() {
             </DataInput>
           </div>
         </div>
-        
-        {/* <Button variant="secondary"  onClick={handleDownloadClick} disabled={finalBuffer ? false : true}>{finalBuffer ? "Baixar dados" : "Aguardando Dados..."}</Button> */}
       </DataConfigComponent>
     </div>
   )

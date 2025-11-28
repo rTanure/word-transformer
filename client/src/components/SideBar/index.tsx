@@ -59,18 +59,6 @@ const ServiceButton = styled.button<{atual?: boolean}>`
   }
 `
 
-const CircularButton = styled.button`
-  /* background-color: #4c5fce; */
-  border-radius: 100%;
-  padding: 5px;
-
-  transition: 0.2s;
-
-  &:hover {
-    background-color: #4c5fce;
-  }
-`
-
 const ConfigurationContainer = styled.div`
   padding: 14px;
   display: flex;
