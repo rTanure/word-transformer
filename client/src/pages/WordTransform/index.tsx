@@ -73,7 +73,7 @@ export default function WordTransform() {
         alert("Erro ao criar o arquivo.");
         return;
       }
-      downloadFile(zipBlob, "documento.pdf");
+      downloadFile(zipBlob, "documento.docx");
     } catch (e) {
       console.error(e);
       alert("Erro ao gerar documento.");
