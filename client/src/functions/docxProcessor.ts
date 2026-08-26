@@ -1,144 +1,112 @@
-import Docxtemplater from "docxtemplater"
-import PizZip from "pizzip"
+import Docxtemplater from "docxtemplater";
 import InspectModule from "docxtemplater/js/inspect-module";
+import PizZip from "pizzip";
 
-
-interface singleData {
-  name: string
+export interface TemplateField {
+  kind: "field";
+  name: string;
 }
 
-function downloadFile(blob: any, filename: string) {
+export interface TemplateSection {
+  kind: "section";
+  name: string;
+  inverted: boolean;
+  children: TemplateNode[];
+}
+
+export type TemplateNode = TemplateField | TemplateSection;
+export type TemplateData = Record<string, unknown>;
+
+interface StructuredTag {
+  type?: string;
+  value?: string;
+  module?: string;
+  inverted?: boolean;
+  dataBound?: boolean;
+  subparsed?: StructuredTag[];
+}
+
+function mergeNodes(target: TemplateNode[], additions: TemplateNode[]): TemplateNode[] {
+  const merged = [...target];
+
+  additions.forEach((addition) => {
+    const existingIndex = merged.findIndex((node) => node.name === addition.name);
+
+    if (existingIndex === -1) {
+      merged.push(addition);
+      return;
+    }
+
+    const existing = merged[existingIndex];
+    if (existing.kind === "section" && addition.kind === "section") {
+      merged[existingIndex] = {
+        ...existing,
+        children: mergeNodes(existing.children, addition.children),
+      };
+    } else if (addition.kind === "section") {
+      merged[existingIndex] = addition;
+    }
+  });
+
+  return merged;
+}
+
+function tagsToNodes(tags: StructuredTag[]): TemplateNode[] {
+  return tags.reduce<TemplateNode[]>((nodes, tag) => {
+    if (tag.type !== "placeholder" || tag.dataBound === false || !tag.value) {
+      return nodes;
+    }
+
+    const node: TemplateNode =
+      tag.module === "loop"
+        ? {
+            kind: "section",
+            name: tag.value,
+            inverted: Boolean(tag.inverted),
+            children: tagsToNodes(tag.subparsed ?? []),
+          }
+        : { kind: "field", name: tag.value };
+
+    return mergeNodes(nodes, [node]);
+  }, []);
+}
+
+export function downloadFile(blob: Blob, filename: string) {
   const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename; 
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
   window.URL.revokeObjectURL(url);
 }
 
-export async function getVariables(template?: File | null): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    
-    if(!template) resolve([])
-    const reader = new FileReader();
+export async function getTemplateSchema(template?: File | null): Promise<TemplateNode[]> {
+  if (!template) return [];
 
-    reader.onload = () => {
-      try {
-        const templateBuffer = reader.result as ArrayBuffer;
+  const templateBuffer = await template.arrayBuffer();
+  const inspectModule = new InspectModule();
+  const zip = new PizZip(templateBuffer);
 
-        const zip = new PizZip(templateBuffer);
-        const inspectModule = new InspectModule();
-
-        new Docxtemplater(zip, {
-          modules: [inspectModule]
-        });
-
-        // Retorna todas as tags encontradas (como chaves do objeto)
-        const variables = Object.keys(inspectModule.getAllTags());
-
-        resolve(variables);
-      } catch (e) {
-        reject(e);
-      }
-    };
-
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(template as Blob);
+  new Docxtemplater(zip, {
+    modules: [inspectModule],
+    paragraphLoop: true,
+    linebreaks: true,
   });
+
+  const tags = inspectModule.getAllStructuredTags() as StructuredTag[];
+  return tagsToNodes(tags);
 }
 
-export const jsonToDocx = (data: singleData, template: File): Promise<Blob | null> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      try {
-        const templateBuffer = reader.result as ArrayBuffer;
-        const zip = new PizZip(templateBuffer);
-
-        const doc = new Docxtemplater();
-        doc.loadZip(zip);
-        doc.setData(data); // usa os valores recebidos
-
-        doc.render();
-
-        // Gera o .docx diretamente (não mais ZIP)
-        const wordFile = doc.getZip().generate({ type: "blob" });
-
-        resolve(wordFile);
-      } catch (error) {
-        console.error("Erro ao gerar DOCX", error);
-        reject(error);
-      }
-    };
-
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(template);
+export async function jsonToDocx(data: TemplateData, template: File): Promise<Blob> {
+  const templateBuffer = await template.arrayBuffer();
+  const zip = new PizZip(templateBuffer);
+  const document = new Docxtemplater(zip, {
+    paragraphLoop: true,
+    linebreaks: true,
   });
-};
 
-const jsonToPdf = (data: Array<singleData>, template: File): Promise<Blob | null> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const templateBuffer = reader.result as ArrayBuffer;
-      
-      const zipedContent = new PizZip();
-      const docxFolder = zipedContent.folder("docx")
-
-      const renderPromises = data.map((value, index) => {
-        return new Promise((resolveRender, rejectRender) => {
-          const doc = new Docxtemplater();
-          const zip = new PizZip(templateBuffer);
-
-          doc.loadZip(zip); // Carrega o template
-          doc.setData(value); // Insere os valores
-
-          try {
-            doc.render(); // Renderiza o documento
-            const wordFile = doc.getZip().generate({ type: 'blob' }); // Gera um blob do documento
-
-            const fileReader = new FileReader();
-            fileReader.onload = async () => {
-              const arrayBuffer = fileReader.result as ArrayBuffer;
-
-              docxFolder.file(`nome_${index}.docx`, arrayBuffer);
-              resolveRender(null);
-            };
-            fileReader.readAsArrayBuffer(wordFile);
-          } catch (error) {
-            console.error("Erro ao renderizar o documento", error);
-            rejectRender(error);
-          }
-        });
-      });
-
-      Promise.all(renderPromises)
-        .then(() => {
-          const zipBlob = zipedContent.generate({ type: 'blob' });
-          resolve(zipBlob);
-        })
-        .catch(error => {
-          console.error("Erro ao processar os documentos", error);
-          reject(error);
-        });
-    };
-
-    reader.onerror = (error) => {
-      console.error("Erro ao ler o template", error);
-      reject(error);
-    };
-
-    reader.readAsArrayBuffer(template);
-  });
-};
-
-
-
-export {
-  jsonToPdf,
-  downloadFile
+  document.render(data);
+  return document.getZip().generate({ type: "blob" });
 }

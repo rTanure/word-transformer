@@ -1,12 +1,37 @@
 # Word Transformer
 
-- Esse projeto tem o objetovo de auxiliar na produção de uma grande quantidade de arquivos word como contratos, petições, dentre outros utilizando uma base de dados em excel.
+Aplicação web para preencher templates `.docx` diretamente no navegador usando Docxtemplater.
 
-# Como usar
+## Como usar
 
-1. Crie a sua planilha alinhada com o canto superior esquerdo da tela. Em sua primeira linha coloque o nome dos dados daquela coluna.
-   - Não utilize espaços. Substitua por "-". (ex: "nome completo" -> "nome-completo")
-   - Cada nome de coluna deve ser único.
-2. Em seu arquivo word de modelo, substitua os campos em que o dado deva ser inserido pelo nome da coluna entre chaves "{nome-da-coluna}".
-   - Não recomendamos a utilização de chaves no arquivo já que é um caractere reservado pela aplicação.
-3. Carregue cada dado em seu respectivo input e clique em gerar dados. Assim que terminar o download vai iniciar.
+1. Adicione tags ao documento do Word.
+2. Selecione o template na aplicação.
+3. Preencha os campos encontrados e gere o documento.
+
+O último template selecionado fica salvo no `localStorage` e é restaurado automaticamente na próxima visita.
+
+## Tags suportadas
+
+Campo simples:
+
+```text
+Cliente: {nome}
+```
+
+Loop (a aplicação permite adicionar e remover itens):
+
+```text
+{#itens}
+{descricao} — {valor}
+{/itens}
+```
+
+Condição (selecione “Condição” no bloco exibido pela aplicação):
+
+```text
+{#mostrar_endereco}
+Endereço: {endereco}
+{/mostrar_endereco}
+```
+
+Loops e condições podem ser aninhados. Para evitar ambiguidades, use nomes únicos para tags que vivem no mesmo nível do template.
